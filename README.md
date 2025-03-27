@@ -36,6 +36,8 @@ So I implemented these as well. The rest are the results from these methods. I w
 
 ## Results
 
+Note that this is from one non-test run and you may get slightly different results. 
+
 ### Performance Comparison
 
 #### Convergence Speed
@@ -130,3 +132,9 @@ The Newton similarities plot ([view figure](https://github.com/agniv-the-marker/
 So, one thing that really surprised me is the orthogonality of the solution from Newton's method and every single other one. I'm not too surprised with SGD being slower to converge, as it is a tradeoff we have to make, but I believe it should eventually get to the solution that the other ones attained.
 
 I think this surprises me because Newton's method almost instantly gets above 90%, which to me implies that the other methods should have headed in a similar direction.
+
+## Extra
+
+![figure here](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/misclassification_histogram.png)
+
+I also wanted to see what the data that it was failing on looked like ([figure here](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/misclassification_histogram.png)), and from vibes it seems like Newton's method only really starts failing on data later.

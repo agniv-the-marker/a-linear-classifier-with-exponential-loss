@@ -165,3 +165,60 @@ def plot_newton_similarities(weights_history_dict):
     # Save the figure
     plt.savefig(os.path.join('figures', 'newton_similarities.png'), dpi=300, bbox_inches='tight')
     plt.show()
+
+def analyze_misclassifications(weights_dict, X, y):
+    """
+    Analyze which examples are misclassified by each method.
+    
+    Args:
+        weights_dict: Dictionary of final weights for each method
+        X: Input features
+        y: True labels
+        
+    Returns:
+        misclassified_counts: Array with count of methods that fail on each example
+        newton_fails: Boolean array indicating which examples Newton's method fails on
+    """
+    n_samples = len(y)
+    misclassified_matrix = np.zeros((len(weights_dict), n_samples), dtype=bool)
+    
+    for i, (method, w) in enumerate(weights_dict.items()):
+        predictions = np.sign(X @ w)
+        misclassified_matrix[i] = (predictions != y)
+    
+    misclassified_counts = np.sum(misclassified_matrix, axis=0)
+    newton_fails = misclassified_matrix[list(weights_dict.keys()).index("Newton")]
+    
+    return misclassified_counts, newton_fails
+
+def plot_misclassification_histogram(misclassified_counts, newton_fails):
+    """
+    Plot histogram of misclassifications.
+    
+    Args:
+        misclassified_counts: Array with count of methods that fail on each example
+        newton_fails: Boolean array indicating which examples Newton's method fails on
+    """
+    plt.figure(figsize=(10, 6))
+    
+    # Plot non-Newton failures in blue
+    mask = ~newton_fails
+    if np.any(mask):
+        plt.hist(misclassified_counts[mask], bins=range(9), alpha=0.7, 
+                color='blue', label='Other failures')
+    
+    # Plot Newton failures in red
+    if np.any(newton_fails):
+        plt.hist(misclassified_counts[newton_fails], bins=range(9), alpha=0.7,
+                color='red', label='Newton failures')
+    
+    plt.xlabel('Number of Methods that Fail')
+    plt.ylabel('Number of Examples')
+    plt.title('Distribution of Misclassifications')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    # Save the figure
+    plt.savefig(os.path.join('figures', 'misclassification_histogram.png'), dpi=300, bbox_inches='tight')
+    plt.show()

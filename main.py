@@ -12,7 +12,9 @@ from analysis_utils import (
     plot_timing_comparison,
     compute_all_pairwise_similarities,
     plot_similarity_matrix,
-    plot_newton_similarities
+    plot_newton_similarities,
+    analyze_misclassifications,
+    plot_misclassification_histogram
 )
 import numpy as np
 
@@ -146,6 +148,17 @@ def main():
     print("\nFinal accuracies:")
     for method, accs in accuracies_dict.items():
         print(f"{method}: {accs[-1]:.2f}%")
+    
+    # Analyze misclassifications
+    misclassified_counts, newton_fails = analyze_misclassifications(weights_dict, X, y)
+    plot_misclassification_histogram(misclassified_counts, newton_fails)
+    
+    # Print summary of misclassifications
+    total_misclassified = np.sum(misclassified_counts > 0)
+    newton_misclassified = np.sum(newton_fails)
+    print(f"\nMisclassification Analysis:")
+    print(f"Total examples misclassified by at least one method: {total_misclassified}")
+    print(f"Examples misclassified by Newton's method: {newton_misclassified}")
 
 if __name__ == "__main__":
     main()
