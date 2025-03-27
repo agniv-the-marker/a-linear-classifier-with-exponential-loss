@@ -126,3 +126,42 @@ def plot_similarity_matrix(similarity_matrix, methods):
     # Save the figure
     plt.savefig(os.path.join('figures', 'similarity_matrix.png'), dpi=300, bbox_inches='tight')
     plt.show()
+
+def plot_newton_similarities(weights_history_dict):
+    """
+    Plot similarities between Newton's method and other methods over iterations.
+    
+    Args:
+        weights_history_dict: Dictionary containing weight history for each method
+    """
+    methods = list(weights_history_dict.keys())
+    newton_weights = weights_history_dict["Newton"]
+    n_iterations = len(newton_weights)
+    
+    # Calculate similarities over time
+    similarities = {}
+    for method in methods:
+        if method != "Newton":
+            method_weights = weights_history_dict[method]
+            # Take the minimum length to handle different iteration counts
+            min_iterations = min(len(method_weights), n_iterations)
+            similarities[method] = [
+                compute_similarity(newton_weights[i], method_weights[i])
+                for i in range(min_iterations)
+            ]
+    
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    for method, sims in similarities.items():
+        plt.plot(sims, label=method)
+    
+    plt.xlabel('Iteration')
+    plt.ylabel('Cosine Similarity with Newton\'s Method')
+    plt.title('Solution Similarity to Newton\'s Method Over Time')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    
+    # Save the figure
+    plt.savefig(os.path.join('figures', 'newton_similarities.png'), dpi=300, bbox_inches='tight')
+    plt.show()

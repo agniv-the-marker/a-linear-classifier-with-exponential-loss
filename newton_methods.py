@@ -19,6 +19,7 @@ def newton_solver(X, y, max_iter=1000, tol=1e-8, verbose=False):
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     iterator = tqdm(range(max_iter), desc="Newton's Method")
     
@@ -38,6 +39,8 @@ def newton_solver(X, y, max_iter=1000, tol=1e-8, verbose=False):
         delta = np.linalg.solve(H, grad)
         w_new = w - delta
         
+        weights_history.append(w_new.copy())
+        
         end_time = time.time()
         times.append(end_time - start_time)
         
@@ -48,7 +51,7 @@ def newton_solver(X, y, max_iter=1000, tol=1e-8, verbose=False):
             
         w = w_new
     
-    return w, losses, accuracies, times
+    return w, losses, accuracies, times, weights_history
 
 def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
     """Solve for w using BFGS method"""
@@ -59,6 +62,7 @@ def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     iterator = tqdm(range(max_iter), desc="BFGS")
     
@@ -98,7 +102,7 @@ def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
             if attempts == max_attempts:
                 if verbose:
                     print(f"\nBFGS stopped due to line search failure after {i} iterations")
-                return w, losses, accuracies, times
+                return w, losses, accuracies, times, weights_history
             
             grad_new = gradient(w_new, X, y)
             s = w_new - w
@@ -123,15 +127,16 @@ def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
             
             w = w_new
             grad = grad_new
+            weights_history.append(w.copy())
             end_time = time.time()
             times.append(end_time - start_time)
             
         except (RuntimeWarning, OverflowError, np.linalg.LinAlgError) as e:
             if verbose:
                 print(f"\nBFGS stopped due to numerical error after {i} iterations: {str(e)}")
-            return w, losses, accuracies, times
+            return w, losses, accuracies, times, weights_history
     
-    return w, losses, accuracies, times
+    return w, losses, accuracies, times, weights_history
 
 def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=False):
     """Solve for w using L-BFGS method"""
@@ -146,6 +151,7 @@ def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     iterator = tqdm(range(max_iter), desc="L-BFGS")
     
@@ -237,6 +243,7 @@ def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=
             
             w = w_new
             grad = grad_new
+            weights_history.append(w.copy())
             end_time = time.time()
             times.append(end_time - start_time)
             
@@ -245,4 +252,4 @@ def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=
                 print(f"\nL-BFGS warning at iteration {i}: {str(e)}")
             continue
     
-    return w, losses, accuracies, times 
+    return w, losses, accuracies, times, weights_history 

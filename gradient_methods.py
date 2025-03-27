@@ -9,6 +9,7 @@ def gradient_descent_solver(X, y, initial_lr=0.001, max_iter=5000, tol=1e-8, ver
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     iterator = tqdm(range(max_iter), desc="Gradient Descent")
     
@@ -34,7 +35,7 @@ def gradient_descent_solver(X, y, initial_lr=0.001, max_iter=5000, tol=1e-8, ver
             if lr < 1e-10:
                 if verbose:
                     print(f"\nGD stopped due to tiny learning rate after {i} iterations")
-                return w, losses, accuracies, times
+                return w, losses, accuracies, times, weights_history
         
         if np.linalg.norm(w_new - w) < tol:
             if verbose:
@@ -42,10 +43,11 @@ def gradient_descent_solver(X, y, initial_lr=0.001, max_iter=5000, tol=1e-8, ver
             break
             
         w = w_new
+        weights_history.append(w.copy())
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, times
+    return w, losses, accuracies, times, weights_history
 
 def conjugate_gradient_solver(X, y, max_iter=5000, tol=1e-14, verbose=False, initial_lr=0.001):
     """Solve for w using conjugate gradient descent with backtracking line search"""
@@ -55,6 +57,7 @@ def conjugate_gradient_solver(X, y, max_iter=5000, tol=1e-14, verbose=False, ini
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     iterator = tqdm(range(max_iter), desc="Conjugate Gradient")
     
@@ -104,11 +107,12 @@ def conjugate_gradient_solver(X, y, max_iter=5000, tol=1e-14, verbose=False, ini
             break
         
         w = w_new
+        weights_history.append(w.copy())
         grad = grad_new
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, times
+    return w, losses, accuracies, times, weights_history
 
 def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, max_iter=10000, tol=1e-8, verbose=False):
     """Solve for w using stochastic gradient descent"""
@@ -117,6 +121,7 @@ def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, ma
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     initial_lr = initial_lr / batch_size
     
@@ -157,6 +162,7 @@ def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, ma
                 break
             
             w = w_new
+            weights_history.append(w.copy())
             
         except (RuntimeWarning, OverflowError) as e:
             if verbose:
@@ -166,7 +172,7 @@ def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, ma
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, times
+    return w, losses, accuracies, times, weights_history
 
 def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, max_iter=10000, tol=1e-8, verbose=False):
     """Solve for w using minibatch gradient descent"""
@@ -175,6 +181,7 @@ def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, ma
     losses = []
     accuracies = []
     times = []
+    weights_history = [w.copy()]
     
     n_batches = n_samples // batch_size
     
@@ -240,6 +247,7 @@ def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, ma
                 break
             
             w = w_new
+            weights_history.append(w.copy())
             
         except (RuntimeWarning, OverflowError) as e:
             if verbose:
@@ -249,4 +257,4 @@ def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, ma
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, times 
+    return w, losses, accuracies, times, weights_history 

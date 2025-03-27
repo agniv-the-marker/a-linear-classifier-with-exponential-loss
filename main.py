@@ -11,7 +11,8 @@ from analysis_utils import (
     plot_training_progress,
     plot_timing_comparison,
     compute_all_pairwise_similarities,
-    plot_similarity_matrix
+    plot_similarity_matrix,
+    plot_newton_similarities
 )
 import numpy as np
 
@@ -30,25 +31,25 @@ def main():
     sgd_iters = 100000 if not testing else 20
     
     # Run all solvers
-    w_newton, losses_newton, accs_newton, time_newton = newton_solver(
+    w_newton, losses_newton, accs_newton, time_newton, hist_newton = newton_solver(
         X, y, max_iter=newton_iters, tol=1e-12, verbose=verbose_training)
     
-    w_gd, losses_gd, accs_gd, time_gd = gradient_descent_solver(
+    w_gd, losses_gd, accs_gd, time_gd, hist_gd = gradient_descent_solver(
         X, y, max_iter=other_iters, tol=1e-8, verbose=verbose_training)
     
-    w_cgd, losses_cgd, accs_cgd, time_cgd = conjugate_gradient_solver(
+    w_cgd, losses_cgd, accs_cgd, time_cgd, hist_cgd = conjugate_gradient_solver(
         X, y, max_iter=other_iters, tol=1e-14, verbose=verbose_training, initial_lr=0.001)
     
-    w_bfgs, losses_bfgs, accs_bfgs, time_bfgs = bfgs_solver(
+    w_bfgs, losses_bfgs, accs_bfgs, time_bfgs, hist_bfgs = bfgs_solver(
         X, y, max_iter=other_iters, tol=1e-8, initial_lr=0.001, verbose=verbose_training)
     
-    w_sgd, losses_sgd, accs_sgd, time_sgd = stochastic_gradient_descent_solver(
+    w_sgd, losses_sgd, accs_sgd, time_sgd, hist_sgd = stochastic_gradient_descent_solver(
         X, y, batch_size=20, max_iter=sgd_iters, tol=1e-8, verbose=verbose_training)
     
-    w_mbgd, losses_mbgd, accs_mbgd, time_mbgd = minibatch_gradient_descent_solver(
+    w_mbgd, losses_mbgd, accs_mbgd, time_mbgd, hist_mbgd = minibatch_gradient_descent_solver(
         X, y, batch_size=100, max_iter=other_iters, tol=1e-8, verbose=verbose_training)
     
-    w_lbfgs, losses_lbfgs, accs_lbfgs, time_lbfgs = lbfgs_solver(
+    w_lbfgs, losses_lbfgs, accs_lbfgs, time_lbfgs, hist_lbfgs = lbfgs_solver(
         X, y, max_iter=other_iters, tol=1e-8, initial_lr=0.001, m=10, verbose=verbose_training)
     
     # Find points where accuracy exceeds 90%
@@ -103,9 +104,23 @@ def main():
         "L-BFGS": w_lbfgs
     }
     
+    # Create dictionary of weight histories
+    weights_history_dict = {
+        "Newton": hist_newton,
+        "Gradient Descent": hist_gd,
+        "Conjugate Gradient": hist_cgd,
+        "BFGS": hist_bfgs,
+        "SGD": hist_sgd,
+        "Minibatch GD": hist_mbgd,
+        "L-BFGS": hist_lbfgs
+    }
+    
     # Plot results
     plot_training_progress(losses_dict, accuracies_dict, threshold_points)
     plot_timing_comparison(timing_dict, threshold_points)
+    
+    # Plot newton similarities
+    plot_newton_similarities(weights_history_dict)
     
     # Compute and plot similarities
     similarity_matrix = compute_all_pairwise_similarities(weights_dict, verbose=verbose_similarity)

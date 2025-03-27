@@ -109,6 +109,13 @@ The similarity matrix ([view figure](https://github.com/agniv-the-marker/a-linea
 - Other methods seem to converge to a similar solution
 - Solutions that aren't quite there yet (SGD) probably need signifigantly more time to converge.
 
+![view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/newton_similarities.png)
+
+The Newton similarities plot ([view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/newton_similarities.png)) shows:
+
+- Quasi-Newton methods are the most ``similar'' though they really aren't.
+- Over time they become more and more similar, even though they're still very orthogonal.
+
 ### Key Observations
 
 1. Newton's method achieves rapid convergence but at a higher computational cost per iteration
@@ -122,4 +129,4 @@ The similarity matrix ([view figure](https://github.com/agniv-the-marker/a-linea
 
 So, one thing that really surprised me is the orthogonality of the solution from Newton's method and every single other one. I'm not too surprised with SGD being slower to converge, as it is a tradeoff we have to make, but I believe it should eventually get to the solution that the other ones attained.
 
-I think this surprises me because Newton's method almost instantly gets above 90%, which to me implies that the other methods should have headed in a similar direction. So, in theory, tracking similarity over time makes sense to see how quickly it diverges?
+I think this surprises me because Newton's method almost instantly gets above 90%, which to me implies that the other methods should have headed in a similar direction.
