@@ -20,7 +20,7 @@ def main():
     testing = False
     
     # Load data
-    X, y = load_data('X.txt', 'y.txt')
+    X, y = load_data('./data/X.txt', './data/y.txt')
     print(f"Data dimensions: X: {X.shape}, y: {y.shape}")
     
     # Set iterations based on testing flag
