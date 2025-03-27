@@ -86,6 +86,7 @@ Final loss values:
 ![view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/training_progress.png)
 
 The training progress plots ([view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/training_progress.png)) show:
+
 - Newton's method achieves rapid convergence in both loss and accuracy
 - Other methods show slower but steady convergence patterns
 - SGD exhibits more volatile behavior and slower convergence
@@ -94,6 +95,7 @@ The training progress plots ([view figure](https://github.com/agniv-the-marker/a
 ![view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/timing_comparison.png)
 
 The timing comparison ([view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/timing_comparison.png)) reveals:
+
 - Newton's method has significantly higher per-iteration cost
 - Other methods have comparable per-iteration costs
 - Time to 90% accuracy varies significantly between methods
@@ -102,6 +104,7 @@ The timing comparison ([view figure](https://github.com/agniv-the-marker/a-linea
 ![view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/similarity_matrix.png)
 
 The similarity matrix ([view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/similarity_matrix.png)) shows:
+
 - Newton's method solution is notably different from other methods
 - Other methods show varying degrees of similarity to each other
 - Quasi-Newton methods (BFGS, L-BFGS) show high similarity to each other
