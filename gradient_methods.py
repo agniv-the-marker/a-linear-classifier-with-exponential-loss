@@ -34,7 +34,7 @@ def gradient_descent_solver(X, y, initial_lr=0.001, max_iter=5000, tol=1e-8, ver
             if lr < 1e-10:
                 if verbose:
                     print(f"\nGD stopped due to tiny learning rate after {i} iterations")
-                return w, losses, accuracies, np.mean(times)
+                return w, losses, accuracies, times
         
         if np.linalg.norm(w_new - w) < tol:
             if verbose:
@@ -45,7 +45,7 @@ def gradient_descent_solver(X, y, initial_lr=0.001, max_iter=5000, tol=1e-8, ver
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, np.mean(times)
+    return w, losses, accuracies, times
 
 def conjugate_gradient_solver(X, y, max_iter=5000, tol=1e-14, verbose=False, initial_lr=0.001):
     """Solve for w using conjugate gradient descent with backtracking line search"""
@@ -108,7 +108,7 @@ def conjugate_gradient_solver(X, y, max_iter=5000, tol=1e-14, verbose=False, ini
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, np.mean(times)
+    return w, losses, accuracies, times
 
 def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, max_iter=10000, tol=1e-8, verbose=False):
     """Solve for w using stochastic gradient descent"""
@@ -166,7 +166,7 @@ def stochastic_gradient_descent_solver(X, y, batch_size=32, initial_lr=0.001, ma
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, np.mean(times)
+    return w, losses, accuracies, times
 
 def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, max_iter=10000, tol=1e-8, verbose=False):
     """Solve for w using minibatch gradient descent"""
@@ -249,4 +249,4 @@ def minibatch_gradient_descent_solver(X, y, batch_size=100, initial_lr=0.001, ma
         end_time = time.time()
         times.append(end_time - start_time)
     
-    return w, losses, accuracies, np.mean(times) 
+    return w, losses, accuracies, times 

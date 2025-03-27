@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
-def find_accuracy_threshold(accuracies, threshold=90):
-    """Find the first iteration where accuracy exceeds the threshold"""
+def find_accuracy_threshold(accuracies, times, threshold=90):
+    """Find the first iteration where accuracy exceeds the threshold and its corresponding time"""
+    cumulative_time = np.cumsum(times)
     for i, acc in enumerate(accuracies):
         if acc >= threshold:
-            return i
-    return None
+            return i, cumulative_time[i]
+    return None, None
 
 def plot_training_progress(losses_dict, accuracies_dict, threshold_points=None):
     """Plot training progress for all methods"""
@@ -28,28 +30,56 @@ def plot_training_progress(losses_dict, accuracies_dict, threshold_points=None):
     ax2.set_ylabel('Accuracy (%)')
     for method, accs in accuracies_dict.items():
         line, = ax2.plot(accs, label=method)
-        if threshold_points and method in threshold_points and threshold_points[method] is not None:
-            idx = threshold_points[method]
-            ax2.plot(idx, accs[idx], 'o', color=line.get_color(), 
-                    markersize=10, label=f'{method} 90%')
+        if threshold_points and method in threshold_points:
+            point = threshold_points[method]
+            if point is not None:
+                idx, _ = point
+                if idx is not None:  # Check that idx is not None
+                    ax2.plot(idx, accs[idx], 'o', color=line.get_color(), 
+                            markersize=10, label=f'{method} 90%')
     ax2.legend()
     ax2.grid(True)
     
     plt.tight_layout()
+    # Save the figure
+    plt.savefig(os.path.join('figures', 'training_progress.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
-def plot_timing_comparison(timing_dict):
-    """Plot average time per step for each method"""
-    plt.figure(figsize=(10, 5))
-    methods = list(timing_dict.keys())
-    times = [timing_dict[method] * 1000 for method in methods]  # Convert to milliseconds
+def plot_timing_comparison(timing_dict, threshold_points):
+    """Plot average time per step and time to 90% accuracy for each method"""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
     
-    plt.bar(methods, times)
-    plt.title('Average Time per Step')
-    plt.ylabel('Time (milliseconds)')
-    plt.xticks(rotation=45)
-    plt.grid(True, axis='y')
+    # Plot average time per step
+    methods = list(timing_dict.keys())
+    times = [np.mean(timing_dict[method]) * 1000 for method in methods]  # Convert to milliseconds
+    
+    ax1.bar(methods, times)
+    ax1.set_title('Average Time per Step')
+    ax1.set_ylabel('Time (milliseconds)')
+    ax1.tick_params(axis='x', rotation=45)
+    ax1.grid(True, axis='y')
+    
+    # Plot time to 90% accuracy
+    times_to_threshold = []
+    for method in methods:
+        if threshold_points[method] is not None:
+            _, time = threshold_points[method]
+            if time is not None:
+                times_to_threshold.append(time * 1000)  # Convert to milliseconds
+            else:
+                times_to_threshold.append(np.nan)
+        else:
+            times_to_threshold.append(np.nan)
+    
+    ax2.bar(methods, times_to_threshold)
+    ax2.set_title('Time to 90% Accuracy')
+    ax2.set_ylabel('Time (milliseconds)')
+    ax2.tick_params(axis='x', rotation=45)
+    ax2.grid(True, axis='y')
+    
     plt.tight_layout()
+    # Save the figure
+    plt.savefig(os.path.join('figures', 'timing_comparison.png'), dpi=300, bbox_inches='tight')
     plt.show()
 
 def compute_similarity(w1, w2):
@@ -93,4 +123,6 @@ def plot_similarity_matrix(similarity_matrix, methods):
     
     plt.title('Solution Similarity Matrix')
     plt.tight_layout()
-    plt.show() 
+    # Save the figure
+    plt.savefig(os.path.join('figures', 'similarity_matrix.png'), dpi=300, bbox_inches='tight')
+    plt.show()

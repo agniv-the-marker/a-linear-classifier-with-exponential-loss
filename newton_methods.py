@@ -48,7 +48,7 @@ def newton_solver(X, y, max_iter=1000, tol=1e-8, verbose=False):
             
         w = w_new
     
-    return w, losses, accuracies, np.mean(times)
+    return w, losses, accuracies, times
 
 def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
     """Solve for w using BFGS method"""
@@ -98,7 +98,7 @@ def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
             if attempts == max_attempts:
                 if verbose:
                     print(f"\nBFGS stopped due to line search failure after {i} iterations")
-                return w, losses, accuracies, np.mean(times)
+                return w, losses, accuracies, times
             
             grad_new = gradient(w_new, X, y)
             s = w_new - w
@@ -129,9 +129,9 @@ def bfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, verbose=False):
         except (RuntimeWarning, OverflowError, np.linalg.LinAlgError) as e:
             if verbose:
                 print(f"\nBFGS stopped due to numerical error after {i} iterations: {str(e)}")
-            return w, losses, accuracies, np.mean(times)
+            return w, losses, accuracies, times
     
-    return w, losses, accuracies, np.mean(times)
+    return w, losses, accuracies, times
 
 def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=False):
     """Solve for w using L-BFGS method"""
@@ -245,4 +245,4 @@ def lbfgs_solver(X, y, max_iter=1000, tol=1e-8, initial_lr=0.001, m=10, verbose=
                 print(f"\nL-BFGS warning at iteration {i}: {str(e)}")
             continue
     
-    return w, losses, accuracies, np.mean(times) 
+    return w, losses, accuracies, times 

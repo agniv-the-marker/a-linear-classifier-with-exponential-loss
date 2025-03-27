@@ -13,6 +13,7 @@ from analysis_utils import (
     compute_all_pairwise_similarities,
     plot_similarity_matrix
 )
+import numpy as np
 
 def main():
     verbose_training = False
@@ -52,13 +53,13 @@ def main():
     
     # Find points where accuracy exceeds 90%
     threshold_points = {
-        "Newton": find_accuracy_threshold(accs_newton),
-        "Gradient Descent": find_accuracy_threshold(accs_gd),
-        "Conjugate Gradient": find_accuracy_threshold(accs_cgd),
-        "BFGS": find_accuracy_threshold(accs_bfgs),
-        "SGD": find_accuracy_threshold(accs_sgd),
-        "Minibatch GD": find_accuracy_threshold(accs_mbgd),
-        "L-BFGS": find_accuracy_threshold(accs_lbfgs)
+        "Newton": find_accuracy_threshold(accs_newton, time_newton),
+        "Gradient Descent": find_accuracy_threshold(accs_gd, time_gd),
+        "Conjugate Gradient": find_accuracy_threshold(accs_cgd, time_cgd),
+        "BFGS": find_accuracy_threshold(accs_bfgs, time_bfgs),
+        "SGD": find_accuracy_threshold(accs_sgd, time_sgd),
+        "Minibatch GD": find_accuracy_threshold(accs_mbgd, time_mbgd),
+        "L-BFGS": find_accuracy_threshold(accs_lbfgs, time_lbfgs)
     }
     
     # Create dictionaries for plotting
@@ -104,19 +105,24 @@ def main():
     
     # Plot results
     plot_training_progress(losses_dict, accuracies_dict, threshold_points)
-    plot_timing_comparison(timing_dict)
+    plot_timing_comparison(timing_dict, threshold_points)
     
     # Compute and plot similarities
     similarity_matrix = compute_all_pairwise_similarities(weights_dict, verbose=verbose_similarity)
     plot_similarity_matrix(similarity_matrix, list(weights_dict.keys()))
     
     # Print summary statistics
-    print("\nIterations to reach 90% accuracy:")
-    for method, point in threshold_points.items():
-        if point is not None:
-            print(f"{method}: {point} iterations")
+    print("\nIterations and time to reach 90% accuracy:")
+    for method, (iter_point, time_point) in threshold_points.items():
+        if iter_point is not None:
+            print(f"{method}: {iter_point} iterations, {time_point*1000:.2f} milliseconds")
         else:
             print(f"{method}: Did not reach 90% accuracy")
+    
+    print("\nAverage time per step:")
+    for method, times in timing_dict.items():
+        avg_time = np.mean(times) * 1000  # Convert to milliseconds
+        print(f"{method}: {avg_time:.2f} milliseconds")
     
     print("\nFinal loss values:")
     for method, losses in losses_dict.items():
