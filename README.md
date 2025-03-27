@@ -106,8 +106,8 @@ The timing comparison ([view figure](https://github.com/agniv-the-marker/a-linea
 The similarity matrix ([view figure](https://github.com/agniv-the-marker/a-linear-classifier-with-exponential-loss/blob/main/figures/similarity_matrix.png)) shows:
 
 - Newton's method solution is notably different from other methods
-- Other methods show varying degrees of similarity to each other
-- Quasi-Newton methods (BFGS, L-BFGS) show high similarity to each other
+- Other methods seem to converge to a similar solution
+- Solutions that aren't quite there yet (SGD) probably need signifigantly more time to converge.
 
 ### Key Observations
 
